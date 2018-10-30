@@ -1,0 +1,10 @@
+//comandos para enviar 
+
+//enviar tudo para staged area
+git add --all
+
+//commit comentarios do envio
+git commit -m "Inicio do projeto"
+
+//empurrar arquivos para nuvem diretorio master
+git push origin master
