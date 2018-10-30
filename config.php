@@ -1,4 +1,5 @@
 ﻿<?php
+setlocale(LC_ALL,"pt_BR", "pt_BR.utf-8", "portuguese");
 
 spl_autoload_register(function($class_name){
 //buscando na pasta classs	

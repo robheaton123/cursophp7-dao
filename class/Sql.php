@@ -14,8 +14,8 @@ class Sql extends PDO {
 //percorrendo $parameters, arrays que foram passados		
 		foreach($parameters as $key => $value){
 			
-			$this->setParam($key,$value);
-			
+			$this->setParam($statement,$key,$value);
+			//setParam espera 3 parametros
 		}
 		
 	}
@@ -35,7 +35,7 @@ class Sql extends PDO {
 		
 		$stmt->execute();
 		
-		return $stmt;
+		return $stmt;					////$rawQuery =  query bruta
 		
 	}
 	
