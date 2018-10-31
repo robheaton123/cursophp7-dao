@@ -60,8 +60,82 @@ class Usuario {
 		
 	}
 	
-	public function __toString(){//metodo magico retornando json melhor formatado para mostrar na tela
+	public static function getList(){//traz uma lista todos os logins
+		$sql = new Sql();
 		
+		return $sql->select("SELECT*FROM tb_usuarios ORDER BY deslogin;");
+	}
+	
+	public static function search($login){ //buscando pelo login
+		$sql = new Sql();
+		
+		return $sql->select("SELECT*FROM tb_usuarios WHERE deslogin LIKE :SEARCH ORDER BY deslogin",array(
+		':SEARCH'=>"%".$login."%"
+		));
+	}
+	
+	public function login($login,$password){//buscando usuario por login e senha
+		
+		$sql = new Sql(); //instanciando a classe sql
+		
+		$results = $sql->select("SELECT*FROM tb_usuarios WHERE deslogin = :LOGIN AND dessenha = :PASSWORD",array(
+		":LOGIN"=>$login, 
+		":PASSWORD"=>$password	
+			//passando um select para $results, parametro um array(como na classe Sql)
+		));
+		
+		if(count($results) > 0){//count se o resultado for maior que zero
+			$row = $results[0];	//linha com o resultado do primeiro index do array (so vai retornar um)
+			
+			$this->setIdusuario($row['idusuario']);//preenchendo os dados dos atributos da classe usuario
+			$this->setDeslogin($row['deslogin']);
+			$this->setDessenha($row['dessenha']);
+			$this->setDtcadastro(new DateTime($row{'dtcadastro'})); //instanciando a data
+			
+		}else{
+			throw new Exception("Usuario ou senha inválidos !!");
+		}//pegando o erro caso nao haja nenum registro
+	}
+	
+	public function setData($data){  
+		$this->setIdusuario($data['idusuario']);//preenchendo os dados dos atributos da classe usuario
+		$this->setDeslogin($data['deslogin']);
+		$this->setDessenha($data['dessenha']);
+		$this->setDtcadastro(new DateTime($data{'dtcadastro'})); //instanciando a data
+		
+		
+		/*funcao setData para usar no lugar
+		$row = $results[0];	//linha com o resultado do primeiro index do array (so vai retornar um)
+			
+			$this->setIdusuario($row['idusuario']);//preenchendo os dados dos atributos da classe usuario
+			$this->setDeslogin($row['deslogin']);
+			$this->setDessenha($row['dessenha']);
+			$this->setDtcadastro(new DateTime($row{'dtcadastro'})); //instanciando a data */
+			
+	}
+	
+	public function insert(){//INSERT USANDO CALL, CHAMANDO PROCEDURE DO BANCO DE DADOS
+		
+		$sql = new Sql();
+			//usado select pois retornou o last_insert_id da procedure
+		$results = $sql->select("CALL sp_usuarios_insert(:LOGIN,:PASSWORD)",array(
+		":LOGIN"=>$this->getDeslogin(),
+		":PASSWORD"=>$this->getDessenha()
+		));
+		
+		if (count($results) > 0) {//retornou o select da procedure
+			$this->setData($results[0]);
+		}
+	}
+	
+	//construct inicializar com "" caso nao passar os parametros
+	public function __construct($login = "",$password = ""){
+		$this->setDeslogin($login);
+		$this->setDessenha($password);
+	}
+	
+	public function __toString(){//metodo magico retornando json melhor formatado para mostrar na tela
+//__toString somente chamar o objeto ex: echo $objeto;		
 		return json_encode(array(//retornado um array com os dados da classe
 			"idusuario"=>$this->getIdusuario(),
 			"deslogin"=>$this->getDeslogin(),
