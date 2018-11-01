@@ -63,5 +63,23 @@ echo $upd;  //__toString
 					*/
 //////////////////////////DELETE  ///////////////////////////
 
+$del = new Usuario();
+
+$del->loadById(2);
+
+$del->delete();
+
+var_dump($del);
+
+
+
+
+
+
+
+
+
+
+
 
 ?>

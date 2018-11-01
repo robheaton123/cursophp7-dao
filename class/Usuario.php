@@ -145,6 +145,21 @@ class Usuario {
 		
 	}
 	
+	public function delete(){
+		
+		$sql = new Sql();
+		
+		$sql->query("DELETE FROM tb_usuarios WHERE idusuario = :ID",array(
+		":ID"=>$this->getIdusuario()
+		));
+		//zerando os atributos da classe Usuario
+		$this->setIdusuario(null);
+		$this->setDeslogin(null);
+		$this->setDessenha(null);
+		$this->setDtcadastro(null);
+		
+	}
+	
 	
 	//construct inicializar com "" caso nao passar os parametros
 	public function __construct($login = "",$password = ""){
